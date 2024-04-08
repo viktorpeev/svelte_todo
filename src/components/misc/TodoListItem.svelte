@@ -29,31 +29,29 @@
 		</section>
 	</section>
 
-	<section>
-		<script src="https://esm.run/@material/web/all.js" type="module"></script>
-		<md-dialog open={dialogIsOpen} closed={(dialogIsOpen = false)}>
-			<form slot="content" id={`todo-form-${todo.id}`} method="dialog">Pick a custom color:</form>
+	<script src="https://esm.run/@material/web/all.js" type="module"></script>
+	<md-dialog open={dialogIsOpen ?? false} closed={(dialogIsOpen = false)}>
+		<form slot="content" id={`todo-form-${todo.id}`} method="dialog">Pick a custom color:</form>
 
-			<div class="todo-modal" slot="actions">
-				<button
-					form={`todo-form-${todo.id}`}
-					on:click={() => handleColourSelection(todo.id, 'lightblue')}>Light-blue</button
-				>
-				<button
-					form={`todo-form-${todo.id}`}
-					on:click={() => handleColourSelection(todo.id, 'yellow')}>Yellow</button
-				>
-				<button
-					form={`todo-form-${todo.id}`}
-					on:click={() => handleColourSelection(todo.id, 'lightgreen')}>Light-green</button
-				>
-				<button
-					form={`todo-form-${todo.id}`}
-					on:click={() => handleColourSelection(todo.id, 'transparent')}>None</button
-				>
-			</div>
-		</md-dialog>
-	</section>
+		<div class="todo-modal" slot="actions">
+			<button
+				form={`todo-form-${todo.id}`}
+				on:click={() => handleColourSelection(todo.id, 'lightblue')}>Light-blue</button
+			>
+			<button
+				form={`todo-form-${todo.id}`}
+				on:click={() => handleColourSelection(todo.id, 'yellow')}>Yellow</button
+			>
+			<button
+				form={`todo-form-${todo.id}`}
+				on:click={() => handleColourSelection(todo.id, 'lightgreen')}>Light-green</button
+			>
+			<button
+				form={`todo-form-${todo.id}`}
+				on:click={() => handleColourSelection(todo.id, 'transparent')}>None</button
+			>
+		</div>
+	</md-dialog>
 </section>
 
 <style>
@@ -78,7 +76,7 @@
 		background-color: transparent;
 		cursor: pointer;
 	}
-	.todo-modal button{
+	.todo-modal button {
 		background-color: transparent;
 		border-radius: 15px;
 		cursor: pointer;
