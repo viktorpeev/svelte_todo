@@ -10,9 +10,6 @@
 	let optionFilters: any[] = [];
 	let colourList: any[] = [];
 
-	const forceUpdate = async (_: any) => {};
-	let doRerender = 0;
-
 	TodoStore.subscribe((data) => {
 		todoList = data;
 		todoListCopy = todoList;
@@ -23,7 +20,6 @@
 			);
 		}
 
-		console.log(todoListCopy);
 		colourList = todoList.reduce((colourSet, todo) => {
 			if (todo.colour && todo.colour !== 'transparent') {
 				colourSet.add(todo.colour);
@@ -35,7 +31,14 @@
 	function handleKeydown(event: { key: string }) {
 		if (event.key == 'Enter' && inputValue.trim()) {
 			TodoStore.update((todos: any[]) => {
-				return [...todos, { title: inputValue }];
+				return [
+					...todos,
+					{
+						title: inputValue,
+						id: Math.floor(Math.random() * Date.now()).toString(16),
+						completed: false
+					}
+				];
 			});
 			inputValue = '';
 		}
@@ -87,8 +90,7 @@
 		);
 	}
 
-	function handleClearAll() {
-		doRerender++;
+	function reset() {
 		colourFilter = [];
 		optionFilters = [];
 		todoListCopy = todoList;
@@ -107,47 +109,116 @@
 	}
 
 	function handleSelectAll() {
+		let filteredTodos = todoListCopy.map((todo) => {
+			return todo.id;
+		});
+
 		TodoStore.update((todos) =>
 			todos.map((todo: any) => {
-				return { ...todo, completed: true };
+				if (filteredTodos.includes(todo.id)) {
+					return { ...todo, completed: true };
+				}
+				return todo;
 			})
 		);
 	}
 
 	function handleDeselectAll() {
+		let filteredTodos = todoListCopy.map((todo) => {
+			return todo.id;
+		});
+
 		TodoStore.update((todos) =>
 			todos.map((todo: any) => {
-				return { ...todo, completed: false };
+				if (filteredTodos.includes(todo.id)) {
+					return { ...todo, completed: false };
+				}
+				return todo;
 			})
 		);
 	}
 
 	function RemoveAllTodos() {
-		TodoStore.update(() => {
-			return [];
+		let filteredTodos = todoListCopy.map((todo) => {
+			return todo.id;
 		});
+
+		TodoStore.update((todos) => todos.filter((todo: any) => !filteredTodos.includes(todo.id)));
+
+		reset();
 	}
 </script>
 
-<section style="display: flex">
-	<section>
-		<input on:keydown={handleKeydown} id="todoInput" bind:value={inputValue} />
+<section class="todo-section">
+	<FilterSection colourList={Array.from(colourList)} {handleFilter} {reset} />
 
-		{#each todoListCopy as todo (todo.id)}
+	<section class="todo-list" style="background-color: white">
+		<input
+			on:keydown={handleKeydown}
+			id="todoInput"
+			bind:value={inputValue}
+			placeholder="What needs to be done?"
+		/>
+
+		{#each todoListCopy as todo, index (todo.id)}
 			{#if todo.title}
+				{#if index == 0}
+					<hr style="padding: 0; margin:0" />
+				{/if}
 				<TodoListItemSection {todo} {handleSelect} {handleRemove} {handleColourSelection} />
+				<hr />
 			{/if}
 		{/each}
 	</section>
-	{#await forceUpdate(doRerender) then _}
-		<FilterSection {colourList} {handleFilter} {handleClearAll} />
-	{/await}
-	<section>
-		<button on:click={() => handleSelectAll()}>select all</button>
-		<button on:click={() => handleDeselectAll()}>Deselect all</button>
-		<button on:click={() => RemoveAllTodos()}>Remove all</button>
+
+	<section class="todo-action-buttons-container">
+		<h2>Action Buttons</h2>
+
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<!-- svelte-ignore a11y-no-static-element-interactions -->
+		<section class="todo-action-buttons">
+			<md-elevated-button on:click={() => handleSelectAll()}>Select All</md-elevated-button>
+			<md-elevated-button on:click={() => handleDeselectAll()}>Deselect all</md-elevated-button>
+			<md-elevated-button on:click={() => RemoveAllTodos()}>Remove all</md-elevated-button>
+		</section>
 	</section>
 </section>
 
 <style>
+	#todoInput {
+		width: 100%;
+		height: 35px;
+		border: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	#todoInput:focus-visible {
+		outline-width: 0;
+	}
+
+	.todo-section {
+		display: flex;
+		width: 100%;
+		justify-content: space-evenly;
+	}
+
+	.todo-action-buttons-container {
+		border: 1px solid black;
+		height: fit-content;
+
+		padding: 15px;
+	}
+
+	.todo-action-buttons {
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+	}
+
+	.todo-list {
+		width: 50%;
+		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+		padding: 15px;
+	}
 </style>

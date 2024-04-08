@@ -23,8 +23,8 @@
 
 			<label class={todo.completed ? 'completed' : ''} for={todo.title}>{todo.title}</label><br />
 		</section>
-		<section>
-			<button on:click={() => handleRemove(todo.id)}>x</button>
+		<section class="todo-mod-buttons">
+			<button on:click={() => handleRemove(todo.id)}>X</button>
 			<button on:click={() => handleColourDialogOpen()}>C</button>
 		</section>
 	</section>
@@ -34,22 +34,22 @@
 		<md-dialog open={dialogIsOpen} closed={(dialogIsOpen = false)}>
 			<form slot="content" id={`todo-form-${todo.id}`} method="dialog">Pick a custom color:</form>
 
-			<div slot="actions">
+			<div class="todo-modal" slot="actions">
 				<button
 					form={`todo-form-${todo.id}`}
-					on:click={() => handleColourSelection(todo.id, 'lightblue')}>blue</button
+					on:click={() => handleColourSelection(todo.id, 'lightblue')}>Light-blue</button
 				>
 				<button
 					form={`todo-form-${todo.id}`}
-					on:click={() => handleColourSelection(todo.id, 'yellow')}>yellow</button
+					on:click={() => handleColourSelection(todo.id, 'yellow')}>Yellow</button
 				>
 				<button
 					form={`todo-form-${todo.id}`}
-					on:click={() => handleColourSelection(todo.id, 'lightgreen')}>green</button
+					on:click={() => handleColourSelection(todo.id, 'lightgreen')}>Light-green</button
 				>
 				<button
 					form={`todo-form-${todo.id}`}
-					on:click={() => handleColourSelection(todo.id, 'transparent')}>none</button
+					on:click={() => handleColourSelection(todo.id, 'transparent')}>None</button
 				>
 			</div>
 		</md-dialog>
@@ -65,5 +65,23 @@
 	.completed {
 		color: #949494;
 		text-decoration: line-through;
+	}
+
+	.todo-mod-buttons {
+		width: auto;
+		display: flex;
+	}
+
+	.todo-mod-buttons button {
+		height: 25px;
+		border: 0;
+		background-color: transparent;
+		cursor: pointer;
+	}
+	.todo-modal button{
+		background-color: transparent;
+		border-radius: 15px;
+		cursor: pointer;
+		padding: 5px;
 	}
 </style>

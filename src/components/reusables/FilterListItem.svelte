@@ -3,7 +3,6 @@
 	export let optionLable: string;
 	export let optionValue: string | boolean;
 	export let handleFilter: (option: string, filter: string | boolean) => void;
-
 </script>
 
 <input
